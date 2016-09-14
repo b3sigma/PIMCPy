@@ -1,0 +1,23 @@
+import numpy
+import pylab
+import stats
+from VMCHelp import *
+import random
+import numpy
+from PIMC5 import *
+
+
+numParticles=2
+numTimeSlices=5
+tau=0.1
+lam=0.5
+Path=PathClass(numParticles,numTimeSlices,tau,lam)
+Path.SetPotential(ZeroFunction,ZeroFunction)
+print "My 0'th slice of the 1'st particle in the z dimension is ",Path.beads[0,1,2]
+#Path.beads=InitTest()
+Path.SetPotential(HarmonicOscillator,ZeroFunction)
+print "The value of the potential action is", Path.PotentialAction(1)
+
+
+
+
