@@ -1,6 +1,6 @@
 #!/bin/env python
 import numpy
-import pylab
+#import pylab
 import CalcStatistics
 from PIMCHelp import *
 import random

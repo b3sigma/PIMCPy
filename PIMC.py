@@ -1,5 +1,5 @@
 import numpy
-import pylab
+#import pylab
 from PIMCHelp import *
 import random
 import CalcStatistics
@@ -108,8 +108,8 @@ def PIMC(numSteps,Path,myMove):
              CalcDensity(Path,DensityHistogram)
    
    print CalcStatistics.Stats(numpy.array(EnergyTrace))
-   pylab.plot(EnergyTrace)
-   pylab.show()
+ #  pylab.plot(EnergyTrace)
+ #  pylab.show()
    #PairHistogram.plotMeNorm("pairme.png")
    #DensityHistogram.plotMe("density.png")
    #pylab.savefig("broken.png")
