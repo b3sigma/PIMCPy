@@ -1,6 +1,6 @@
 #!/bin/env python
 import numpy
-import pylab
+##import pylab
 import CalcStatistics
 from VMCHelp import *
 import random

@@ -1,6 +1,6 @@
 #!/bin/env python
 import numpy
-#import pylab
+##import pylab
 from math import *
 
 def Mean (myArray):

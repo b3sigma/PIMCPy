@@ -1,7 +1,7 @@
 #!/bin/env python
 import numpy
-import pylab
-import stats
+##import pylab
+##import stats
 from VMCHelp import *
 import random
 import numpy
