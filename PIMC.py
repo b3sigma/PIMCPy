@@ -19,9 +19,6 @@ class PathClass:
   def SetPotential(self,externalPotentialFunction):
      self.VextHelper=externalPotentialFunction
   def Vee(self,R):
-     # you will write this
-     # using self.c 
-     c=self.c
      dist=numpy.sqrt(numpy.dot(R,R))
      return self.c/(dist+0.1)
   def Vext(self,R):
@@ -41,14 +38,18 @@ class PathClass:
      r1s2=self.beads[slice2,0]
      r2s2=self.beads[slice2,1]
      Vexternal=self.Vext(r1s1)+self.Vext(r2s1)+self.Vext(r1s2)+self.Vext(r2s2)
-     r12s1=numpy.sqrt(numpy.dot(r1s1-r2s1,r1s1-r2s1))
-     r12s2=numpy.sqrt(numpy.dot(r1s2-r2s2,r1s2-r2s2))
+     delta1 = r1s1 - r2s1
+     delta2 = r1s2 - r2s2
+     r12s1=numpy.sqrt(numpy.dot(delta1))
+     r12s2=numpy.sqrt(numpy.dot(delta2))
      Vinteraction=self.Vee(r12s2)+self.Vee(r12s1)
      return 0.5*self.tau*(Vinteraction+Vexternal)
   def RelabelBeads(self):
+    #print "relabeling beads: ", self.beads
     slicesToShift=random.randint(0,self.NumTimeSlices-1)
     l=range(slicesToShift,len(self.beads))+range(0,slicesToShift)
     self.beads=self.beads[l].copy()
+    #print "relabeled beads: ", self.beads
   def KineticEnergy(self):
     KE=0.0
     oneOverFourLambdaTau2=1.0/(4.0*self.lam*self.tau*self.tau)
@@ -107,9 +108,14 @@ def PIMC(numSteps,Path,myMove):
              PairCorrelationFunction(Path,PairHistogram)
              CalcDensity(Path,DensityHistogram)
    
+   print EnergyTrace
    print CalcStatistics.Stats(numpy.array(EnergyTrace))
  #  pylab.plot(EnergyTrace)
  #  pylab.show()
+   print "Pair hisogram:"
+   PairHistogram.printMe()
+   print "Density Histogram"
+   DensityHistogram.printMe()
    #PairHistogram.plotMeNorm("pairme.png")
    #DensityHistogram.plotMe("density.png")
    #pylab.savefig("broken.png")
@@ -145,7 +151,7 @@ def NewToOld(Path,ptclToMove,maxStepSize):
 
 def SingleSliceMove(Path,accepted,attempted):
    attempted=attempted+1.0
-   Path.RelabelBeads()
+   Path.RelabelBeads() # this approach seems silly?
    ptclToMove=random.randint(0,Path.NumParticles-1)
    sliceToMove=1
 
@@ -154,7 +160,8 @@ def SingleSliceMove(Path,accepted,attempted):
    oldAct-=Path.PotentialAction(sliceToMove-1,sliceToMove)
    oldAct-=Path.PotentialAction(sliceToMove,sliceToMove+1)
 
-   delta=1.0*numpy.array([random.random()-0.5,random.random()-0.5,random.random()-0.5])
+   moveScalar = 1.0
+   delta = moveScalar * (numpy.random.random(3) - 0.5)
    Path.beads[1,ptclToMove]=Path.beads[1,ptclToMove]+delta
 
    newAct=-Path.KineticAction(sliceToMove-1,sliceToMove)
@@ -162,6 +169,10 @@ def SingleSliceMove(Path,accepted,attempted):
    newAct-=Path.PotentialAction(sliceToMove-1,sliceToMove)
    newAct-=Path.PotentialAction(sliceToMove,sliceToMove+1)
 
+   # metropolis markoc chain monte carlo
+   # prob of accepting is exp(-(S_new - S_old)) T(n->o)/T(o->n)
+   # T(n->o)/T(o->n) is the ratio of configuration probabilities and is taken to be 1
+   # due to the uniform box boundary
    if not(newAct-oldAct>numpy.log(random.random())):
       Path.beads[sliceToMove,ptclToMove]=Path.beads[sliceToMove,ptclToMove]-delta
    else:
