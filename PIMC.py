@@ -72,6 +72,8 @@ class PathClass:
      return PE/(self.NumTimeSlices+0.0)
   def Energy(self):
      return self.PotentialEnergy()+self.KineticEnergy()
+  def HarmonicEnergy(tau, numTimeSlices, numParticles) :
+     return 0.0
 
 
 def ZeroFunction(slice):
