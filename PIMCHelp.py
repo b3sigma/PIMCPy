@@ -23,7 +23,7 @@ def ReadArray(fname):
     # remaining lines in this file format are numbers
     rawdata = []
     for line in io.readlines() :
-        rawdata.append(double(line))
+        rawdata.append(complex(line))
     data = numpy.array(rawdata)
 
     return data.reshape(tuple(dim))

@@ -40,8 +40,8 @@ class PathClass:
      Vexternal=self.Vext(r1s1)+self.Vext(r2s1)+self.Vext(r1s2)+self.Vext(r2s2)
      delta1 = r1s1 - r2s1
      delta2 = r1s2 - r2s2
-     r12s1=numpy.sqrt(numpy.dot(delta1))
-     r12s2=numpy.sqrt(numpy.dot(delta2))
+     r12s1=numpy.sqrt(numpy.dot(delta1, delta1))
+     r12s2=numpy.sqrt(numpy.dot(delta2, delta2))
      Vinteraction=self.Vee(r12s2)+self.Vee(r12s1)
      return 0.5*self.tau*(Vinteraction+Vexternal)
   def RelabelBeads(self):
@@ -83,9 +83,11 @@ def HarmonicOscillator(r):
 def CalcDensity(self,DensityHistogram):
     for slice in range(0,self.NumTimeSlices): 
         dist=numpy.sqrt(dot(self.beads[slice,0],self.beads[slice,0]))
-        DensityHistogram.add(self.beads[slice,0,0])
+        DensityHistogram.add(dist)
+        #DensityHistogram.add(self.beads[slice,0,0])
         dist=numpy.sqrt(dot(self.beads[slice,1],self.beads[slice,1]))
-        DensityHistogram.add(self.beads[slice,1,0])
+        DensityHistogram.add(dist)
+        #DensityHistogram.add(self.beads[slice,1,0])
 
 def PairCorrelationFunction(self,PairHistogram):
     for slice in range(0,self.NumTimeSlices):
@@ -110,17 +112,21 @@ def PIMC(numSteps,Path,myMove):
    
    print EnergyTrace
    print CalcStatistics.Stats(numpy.array(EnergyTrace))
- #  pylab.plot(EnergyTrace)
- #  pylab.show()
-   print "Pair hisogram:"
-   PairHistogram.printMe()
-   print "Density Histogram"
-   DensityHistogram.printMe()
+   #pylab.plot(EnergyTrace)
+   #pylab.show()
+   
+   #print "Pair hisogram:"
+   #PairHistogram.printMe()
+   #print "Density Histogram"
+   #DensityHistogram.printMe()
+   
    #PairHistogram.plotMeNorm("pairme.png")
    #DensityHistogram.plotMe("density.png")
    #pylab.savefig("broken.png")
+   
    print "Accepted Percentage: ",accepted/attempted
    WriteArray("Canonical.txt",Path.beads)
+   return EnergyTrace
 
 
 def Bisect(Path,ptclToMove,maxStepSize):
